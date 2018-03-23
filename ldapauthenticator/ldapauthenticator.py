@@ -32,7 +32,7 @@ class LDAPAuthenticator(Authenticator):
             return 389  # default plaintext port for LDAP
     
     use_ntlm = Bool(
-        True,
+        False,
         config=True,
         help='Use the NTLM authentication protocol'
     )
