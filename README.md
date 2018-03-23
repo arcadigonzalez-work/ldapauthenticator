@@ -61,9 +61,9 @@ c.LDAPAuthenticator.bind_dn_template = [
 ```
 
 If using NTLM the template should only contain the domain and username in the 
-following format: DOMAIN//{username}
+following format: DOMAIN\\{username}
 ```
-c.LDAPAuthenticator.bind_dn_template = 'wikimedia//{username}'
+c.LDAPAuthenticator.bind_dn_template = 'wikimedia\{username}'
 ```
 
 Don't forget the preceeding `c.` for setting configuration parameters! JupyterHub
@@ -204,6 +204,16 @@ c.LDAPAuthenticator.escape_userdn = False
 In setup above, first LDAP will be searched (with account ldap_search_user_technical_account) for users that have sAMAccountName=login
 Then DN will be constructed using found CN value.
 
+If using NTLM the configuration for Active Directory would be the following:
+
+```python
+c.JupyterHub.authenticator_class = 'ldapauthenticator.LDAPAuthenticator'
+c.LDAPAuthenticator.use_ntlm = True
+c.LDAPAuthenticator.server_address = 'wikimedia.org'
+c.LDAPAuthenticator.bind_dn_template = 'wikimedia\{username}'
+c.LDAPAuthenticator.lookup_dn_search_user = "wikimedia\ldap_search_user_technical_account"
+c.LDAPAuthenticator.lookup_dn_search_password = "secret"
+```
 
 ## Configuration note on local user creation
 
