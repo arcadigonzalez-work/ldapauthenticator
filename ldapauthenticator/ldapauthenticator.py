@@ -30,6 +30,12 @@ class LDAPAuthenticator(Authenticator):
             return 636  # default SSL port for LDAP
         else:
             return 389  # default plaintext port for LDAP
+    
+    use_ntlm = Bool(
+        True,
+        config=True,
+        help='Use the NTLM authentication protocol'
+    )
 
     use_ssl = Bool(
         False,
@@ -277,12 +283,21 @@ class LDAPAuthenticator(Authenticator):
                     username=username,
                     userdn=userdn
             ))
-            conn = ldap3.Connection(
-                server,
-                user=self.escape_userdn_if_needed(userdn),
-                password=password,
-                auto_bind=ldap3.AUTO_BIND_TLS_BEFORE_BIND,
-            )
+            if self.use_ntlm:
+                conn = ldap3.Connection(
+                    server, 
+                    user=self.escape_userdn_if_needed(userdn), 
+                    password=password, 
+                    authentication=ldap3.NTLM
+                )
+                self.log.info("using NTLM authentication protocol")
+            else:
+                conn = ldap3.Connection(
+                    server,
+                    user=self.escape_userdn_if_needed(userdn),
+                    password=password,
+                    auto_bind=ldap3.AUTO_BIND_TLS_BEFORE_BIND,
+                )
             return conn
         
         # Protect against invalid usernames as well as LDAP injection attacks
