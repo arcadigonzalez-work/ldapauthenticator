@@ -60,6 +60,12 @@ c.LDAPAuthenticator.bind_dn_template = [
     'uid={username},ou=developers,dc=wikimedia,dc=org'
 ```
 
+If using NTLM the template should only contain the domain and username in the 
+following format: DOMAIN//{username}
+```
+c.LDAPAuthenticator.bind_dn_template = 'wikimedia//{username}'
+```
+
 Don't forget the preceeding `c.` for setting configuration parameters! JupyterHub
 uses [traitlets](https://traitlets.readthedocs.io) for configuration, and the
 `c` represents the [config object](https://traitlets.readthedocs.io/en/stable/config.html).
@@ -68,6 +74,14 @@ The `{username}` is expanded into the username the user provides.
 
 ### Optional configuration ###
 
+#### `LDAPAuthenticator.use_ntlm` ####
+Boolean to specify whether to use [NTLM authentication protocol](http://ldap3.readthedocs.io/bind.html#ntlm) 
+instead of the default. False by default.
+
+
+```python
+c.LDAPAuthenticator.use_ntlm = True 
+```
 #### `LDAPAuthenticator.allowed_groups` ####
 
 LDAP groups whose members are allowed to log in. This must be
